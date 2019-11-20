@@ -1,0 +1,7 @@
+<div class="container">
+    <div class="column" *ngFor="let image of images; let i=index">
+        <div appLazyLoad [src]="image.url" [offset]="200" class="responsive-image"></div>
+    </div>
+</div>
+
+
