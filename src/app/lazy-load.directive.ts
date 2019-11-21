@@ -1,4 +1,4 @@
-import { Directive, HostBinding, Input, ElementRef, AfterViewInit, OnInit } from '@angular/core';
+import { Directive, HostBinding, Input, ElementRef, AfterViewInit, OnInit, Renderer2 } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 @Directive({
@@ -7,6 +7,7 @@ import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 export class LazyLoadDirective implements OnInit, AfterViewInit {
 
   @HostBinding('style.background-image') backgroundImage: SafeStyle;
+  @HostBinding('style.opacity') opacity: string;
   @Input() offset: number;
   @Input() src: string;
 
@@ -14,8 +15,10 @@ export class LazyLoadDirective implements OnInit, AfterViewInit {
     rootMargin: '0px 0px 200px 0px'
   };
 
-  constructor(private el: ElementRef,
-    private sanitization: DomSanitizer) {
+  constructor(
+    private el: ElementRef,
+    private sanitization: DomSanitizer,
+    private renderer: Renderer2) {
   }
 
   ngOnInit() {
@@ -44,7 +47,13 @@ export class LazyLoadDirective implements OnInit, AfterViewInit {
   }
 
   private loadImage() {
+    const img: HTMLImageElement = this.renderer.createElement('img') as HTMLImageElement;
+    img.src = this.src;
     this.backgroundImage = this.getSanitizedUrl(this.src);
+
+    img.onload = () => {
+      this.opacity = '1';
+    };
   }
 
   private setOffset(): void {
