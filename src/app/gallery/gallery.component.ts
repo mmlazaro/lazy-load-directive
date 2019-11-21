@@ -19,5 +19,4 @@ export class GalleryComponent implements OnInit {
       this.images = images;
     });
   }
-
 }
